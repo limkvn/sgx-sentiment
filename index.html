@@ -1156,6 +1156,16 @@ function renderForecast() {
     for (const h of horizons) {
       const hr = embedData[String(h)];
       if (!hr) continue;
+      const rmsfeAr = hr.dict.rmsfe_ar;
+      // AR(2) baseline row
+      et += '<tr>';
+      et += '<td rowspan="4" style="' + cs + ' font-weight:600; vertical-align:middle;">h=' + h + '</td>';
+      et += '<td style="' + cs + '">AR(2) benchmark</td>';
+      et += '<td style="text-align:right; ' + cs + '">' + rmsfeAr.toFixed(4) + '</td>';
+      et += '<td style="text-align:right; ' + cs + ' color:#64748b;">—</td>';
+      et += '<td style="text-align:right; ' + cs + '">—</td>';
+      et += '<td style="text-align:right; ' + cs + '">—</td>';
+      et += '</tr>';
       const models = [
         { name: "Dictionary ARX", d: hr.dict, wt: "—" },
         { name: "PLS(3) embedding", d: hr.pls3, wt: "—" },
@@ -1170,7 +1180,6 @@ function renderForecast() {
                       m.d.dm_p < 0.05 ? m.d.dm_p.toFixed(3) + " **" :
                       m.d.dm_p < 0.10 ? m.d.dm_p.toFixed(3) + " *" : m.d.dm_p.toFixed(3);
         et += '<tr style="background:' + bgColor + ';">';
-        if (i === 0) et += '<td rowspan="3" style="' + cs + ' font-weight:600; vertical-align:middle;">h=' + h + '</td>';
         et += '<td style="' + cs + '">' + m.name + '</td>';
         et += '<td style="text-align:right; ' + cs + '">' + m.d.rmsfe.toFixed(4) + '</td>';
         et += '<td style="text-align:right; ' + cs + ' color:' + (isImproved ? "#16a34a" : "#64748b") + ';">' + pctStr + '</td>';
