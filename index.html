@@ -993,19 +993,20 @@ function renderCrossCorrelation() {
   const lags = ll.lags;
   const dimColor = DIM_COLORS[currentDim];
 
-  // Color bars by significance (p < 0.05 = solid, else faded)
-  function barColors(rs, ps, color) {
-    return ps.map((p, i) => p < 0.05 ? (color || dimColor) : "#d1d5db");
+  // Color bars by significance (p < 0.05 = solid, else faded version of same color)
+  function barColors(rs, ps, solidColor, fadedColor) {
+    return ps.map((p, i) => p < 0.05 ? (solidColor || dimColor) : (fadedColor || "#d1d5db"));
   }
 
   // Check if there's a second benchmark (business_gdp)
   const ll2 = DATA.lead_lag[currentSample][currentDim + "_gdp"];
 
   // Levels chart — grouped bars if two benchmarks
+  // PMI: blue solid / light blue faded; GDP: green solid / light green faded
   const levelsTraces = [{
     x: lags, y: ll.levels_r, type: "bar",
     name: ll.benchmark_name,
-    marker: { color: barColors(ll.levels_r, ll.levels_p, "#3b82f6") },
+    marker: { color: barColors(ll.levels_r, ll.levels_p, "#3b82f6", "#93c5fd") },
     text: ll.levels_r.map((r, i) => r.toFixed(3) + (ll.levels_p[i] < 0.05 ? "*" : "")),
     textposition: "outside", textfont: { size: 9 },
     hovertemplate: "Lag %{x}: r = %{y:.4f}<extra>" + ll.benchmark_name + "</extra>",
@@ -1014,7 +1015,7 @@ function renderCrossCorrelation() {
     levelsTraces.push({
       x: lags, y: ll2.levels_r, type: "bar",
       name: ll2.benchmark_name,
-      marker: { color: barColors(ll2.levels_r, ll2.levels_p, "#059669") },
+      marker: { color: barColors(ll2.levels_r, ll2.levels_p, "#059669", "#6ee7b7") },
       text: ll2.levels_r.map((r, i) => r.toFixed(3) + (ll2.levels_p[i] < 0.05 ? "*" : "")),
       textposition: "outside", textfont: { size: 9 },
       hovertemplate: "Lag %{x}: r = %{y:.4f}<extra>" + ll2.benchmark_name + "</extra>",
@@ -1037,7 +1038,7 @@ function renderCrossCorrelation() {
   const diffTraces = [{
     x: lags, y: ll.diff_r, type: "bar",
     name: ll.benchmark_name,
-    marker: { color: barColors(ll.diff_r, ll.diff_p, "#3b82f6") },
+    marker: { color: barColors(ll.diff_r, ll.diff_p, "#3b82f6", "#93c5fd") },
     text: ll.diff_r.map((r, i) => r.toFixed(3) + (ll.diff_p[i] < 0.05 ? "*" : "")),
     textposition: "outside", textfont: { size: 9 },
     hovertemplate: "Lag %{x}: r = %{y:.4f}<extra>" + ll.benchmark_name + "</extra>",
@@ -1046,7 +1047,7 @@ function renderCrossCorrelation() {
     diffTraces.push({
       x: lags, y: ll2.diff_r, type: "bar",
       name: ll2.benchmark_name,
-      marker: { color: barColors(ll2.diff_r, ll2.diff_p, "#059669") },
+      marker: { color: barColors(ll2.diff_r, ll2.diff_p, "#059669", "#6ee7b7") },
       text: ll2.diff_r.map((r, i) => r.toFixed(3) + (ll2.diff_p[i] < 0.05 ? "*" : "")),
       textposition: "outside", textfont: { size: 9 },
       hovertemplate: "Lag %{x}: r = %{y:.4f}<extra>" + ll2.benchmark_name + "</extra>",
